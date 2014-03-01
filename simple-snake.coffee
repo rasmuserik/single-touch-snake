@@ -2,8 +2,8 @@
 w = h = 1000
 framewait = 30
 dirStep = 0.1
-stepSize = 7
-sectionSize = 4
+stepSize = 8
+sectionSize = 6
 
 
 document.body.innerHTML = "<canvas style=\"position:absolute;top:0;left:0;width:100%;height:100%\" id=\"canvas\" width=#{w} height=#{h}></canvas>"
@@ -50,12 +50,15 @@ start = ->
     dirStep: dirStep
   body = []
   gameloop()
+  document.body.onkeydown = document.body.onmousedown = document.body.ontouchstart = (e) -> head.dirStep = -dirStep
+  document.body.onkeyup = document.body.onmouseup = document.body.ontouchend = (e) -> head.dirStep = dirStep
 
 die = ->
   i = 0
   dieLoop = ->
     if i > 10
-      return start()
+      setTimeout start, 1000
+      return
     ctx.fillStyle = "rgba(0,0,32,0.3)"
     ctx.fillRect(0,0,1000,1000)
     ctx.fillStyle = "rgba(0,255,0,1)"
@@ -63,8 +66,8 @@ die = ->
     ctx.fillText "#{score-1}•", 300, 500
     console.log "here", i
     ++i
-    setTimeout dieLoop, 300
-  setTimeout dieLoop, 1000
+    setTimeout dieLoop, 30
+  setTimeout dieLoop, 0
 
 gameloop = ->
   startTime = Date.now()
@@ -95,6 +98,3 @@ gameloop = ->
 start()
 
 
-document.body.onkeydown = document.body.onmousedown = document.body.ontouchstart = ->
-  head.dirStep *= -1
-  return true

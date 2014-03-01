@@ -8,9 +8,9 @@
 
   dirStep = 0.1;
 
-  stepSize = 7;
+  stepSize = 8;
 
-  sectionSize = 4;
+  sectionSize = 6;
 
   document.body.innerHTML = "<canvas style=\"position:absolute;top:0;left:0;width:100%;height:100%\" id=\"canvas\" width=" + w + " height=" + h + "></canvas>";
 
@@ -61,7 +61,13 @@
       dirStep: dirStep
     };
     body = [];
-    return gameloop();
+    gameloop();
+    document.body.onkeydown = document.body.onmousedown = document.body.ontouchstart = function(e) {
+      return head.dirStep = -dirStep;
+    };
+    return document.body.onkeyup = document.body.onmouseup = document.body.ontouchend = function(e) {
+      return head.dirStep = dirStep;
+    };
   };
 
   die = function() {
@@ -69,7 +75,8 @@
     i = 0;
     dieLoop = function() {
       if (i > 10) {
-        return start();
+        setTimeout(start, 1000);
+        return;
       }
       ctx.fillStyle = "rgba(0,0,32,0.3)";
       ctx.fillRect(0, 0, 1000, 1000);
@@ -78,9 +85,9 @@
       ctx.fillText("" + (score - 1) + "•", 300, 500);
       console.log("here", i);
       ++i;
-      return setTimeout(dieLoop, 300);
+      return setTimeout(dieLoop, 30);
     };
-    return setTimeout(dieLoop, 1000);
+    return setTimeout(dieLoop, 0);
   };
 
   gameloop = function() {
@@ -114,10 +121,5 @@
   };
 
   start();
-
-  document.body.onkeydown = document.body.onmousedown = document.body.ontouchstart = function() {
-    head.dirStep *= -1;
-    return true;
-  };
 
 }).call(this);

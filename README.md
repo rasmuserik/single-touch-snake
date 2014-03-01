@@ -1,124 +1,110 @@
 # simple-snake 0.0.1
 
-Experiment in drawing flow between circles![browser support](https://ci.testling.com/rasmuserik/simple-snake.png)
 
 # setup
 
-    t0 = + new Date()
-    width = canvas.width
-    height = canvas.width
-    size = 60
-    radius = size * .40
+    w = h = 1000
+    framewait = 30
+    dirStep = 0.1
+    stepSize = 7
+    sectionSize = 4
+    
+    
+    document.body.innerHTML = "<canvas style=\"position:absolute;top:0;left:0;width:100%;height:100%\" id=\"canvas\" width=#{w} height=#{h}></canvas>"
+    
+    canvas = document.getElementById("canvas")
     ctx = canvas.getContext "2d"
-    circlesPerLine = 3
-
-# data
-
     
-    data =
-      a: []
-      b: []
-      c: ["a", "b"]
-      d: ["c", "b"]
-      e: ["c", "b"]
-      f: ["d", "e"]
-      g: ["d", "c"]
-      h: []
-      i: ["f", "g", "h"]
-      j: ["c"]
-      k: ["d", "c"]
-      l: ["f", "g", "h"]
-      m: ["d", "c"]
-      n: []
-      o: ["l", "n", "g"]
-      p: ["l", "o"]
-      q: ["p"]
-      r: ["n", "o"]
-      s: ["r", "q", "p"]
-      t: ["r", "g"]
-      u: ["s"]
-      v: ["r", "t"]
-      w: ["s", "u"]
-      x: ["r", "u", "v", "t", "f", "s"]
-      y: ["t", "x"]
-      z: ["w"]
+    t0 = Date.now()
     
+    score = 0
     
-    for key, val of data
-      data[key] =
-        in: val
-        out: []
-        id: key
-    for key, val of data
-      for id in val.in
-        data[id].out.push key
+    score = head = body = undefined
+    berry =
+      x: 500
+      y: 500
     
-    x = 0
-    y = 0
-    odd = false
-    
-    for key, val of data
-      val.x = x
-      val.y = y
-      x += size
-      if x + size > width
-        odd = !odd
-        x = if odd then size / 2 else 0
-        y = y + size*1.2
-    
-    exitPoint = (data) ->
-      t = radius * Math.sqrt .5
-      [data.x + size/2 + t, data.y + size/2 + t]
-    
-    exitDir = (data) ->
-      [data.x + size/2 + radius * 1.5, data.y + size/2 + radius * 1.5]
-    
-    entryDir= (data, i, n) ->
-      [x,y] = entryPoint(data, i, n)
-      [x,y] = [x - (data.x+width/2), y - (data.y+width/2)]
-      [(data.x+width/2) + 1.15*x, (data.y+width/2) + 1.15*y]
-    
-    entryPoint = (data, i, n) ->
-      t = radius * Math.sqrt .5
-      w = 2
-      a = Math.PI *1.25 + w * (i+1)/(n+1) - w/2
-      y = Math.sin(a)
-      x = Math.cos(a)
-      console.log data
-      console.log x, y, a, w, t, i, n
-      [data.x + size/2 - t, data.y + size/2 - t]
-      [data.x + size/2 + x*radius, data.y + size/2 + y*radius]
-    
-    ctx.lineWidth = 2
-    for key, end of data
-      for i in [0..end.in.length - 1] by 1
-        val = data[end.in[i]]
-        console.log val, end
-        ctx.beginPath()
-        ctx.strokeStyle = hashcolor.intToColor hashcolor.val val.id
-        [x0, y0] = exitPoint val
-        [cx0, cy0] = exitDir val
-        entry = end
-        [x1, y1] = entryPoint entry, i, end.in.length
-        [cx1, cy1] = entryDir entry, i, end.in.length
-        ctx.moveTo x0, y0
-        ctx.quadraticCurveTo cx0, cy0, (cx0+cx1)/2, (cy0+cy1)/2
-        ctx.quadraticCurveTo cx1, cy1, x1, y1
-        ctx.stroke()
-    
-    for key, val of data
+    newBerry = ->
       ctx.beginPath()
-      ctx.arc val.x+size/2, val.y+size/2, radius, 0, Math.PI*2
-      ctx.fillStyle = "rgba(255,255,255,0.8)"
+      ctx.arc berry.x, berry.y, sectionSize*4+1, 0, Math.PI*2
+      ctx.fillStyle = "#002"
       ctx.fill()
-      ctx.strokeStyle = hashcolor.intToColor hashcolor.val key
-      ctx.stroke()
-      ctx.font= "#{size/2}px ubuntu"
-      ctx.fillStyle = "#000"
-      ctx.fillText key, val.x + size *.35, val.y + size * .65
+      ++score
+      berry =
+        x: Math.random() * 800 + 100
+        y: Math.random() * 800 + 100
+      ctx.beginPath()
+      ctx.arc berry.x, berry.y, sectionSize*4, 0, Math.PI*2
+      ctx.fillStyle = "#0f0"
+      ctx.fill()
     
-    t1 = + new Date()
-    console.log "Time:", t1-t0
+    start = ->
+      ctx.fillStyle = "#002"
+      ctx.fillRect 0,0,1000,1000
+      ctx.fillStyle = "#fff"
+      ctx.fillRect 5,5,990,990
+      ctx.fillStyle = "#002"
+      ctx.fillRect 15,15,970,970
+      score = 0
+      newBerry()
+      head =
+        x: w/2
+        y: h/2
+        dir: 0
+        dirStep: dirStep
+      body = []
+      gameloop()
+    
+    die = ->
+      i = 0
+      dieLoop = ->
+        if i > 10
+          return start()
+        ctx.fillStyle = "rgba(0,0,32,0.3)"
+        ctx.fillRect(0,0,1000,1000)
+        ctx.fillStyle = "rgba(0,255,0,1)"
+        ctx.font = "200px sans serif"
+        ctx.fillText "#{score-1}•", 300, 500
+        console.log "here", i
+        ++i
+        setTimeout dieLoop, 300
+      setTimeout dieLoop, 1000
+    
+    gameloop = ->
+      startTime = Date.now()
+      body.push
+        x: head.x
+        y: head.y
+      head.x += Math.sin(head.dir) * stepSize
+      head.y += Math.cos(head.dir) * stepSize
+      head.dir += head.dirStep
+      p = ctx.getImageData(head.x,head.y,1,1).data
+      if p[0]
+        return die()
+      else if p[1]
+        newBerry()
+    
+      ctx.beginPath()
+      ctx.arc head.x, head.y, sectionSize, 0, Math.PI*2
+      ctx.fillStyle = "#f00"
+      ctx.fill()
+      if body.length > score * 30
+        tail = body.shift()
+        ctx.beginPath()
+        ctx.arc tail.x, tail.y, sectionSize + 2, 0, Math.PI*2
+        ctx.fillStyle = "rgba(0,0,0,1)"
+        ctx.fill()
+      setTimeout gameloop, Math.max(0, framewait - (Date.now() - startTime))
+    
+    start()
+    
+    
+    document.body.onkeydown = document.body.onmousedown = document.body.ontouchstart = (e) ->
+      e.preventDefault()
+      head.dirStep = -dirStep
+    document.body.onkeyup = document.body.onmouseup = document.body.ontouchend = (e) ->
+      e.preventDefault()
+      head.dirStep = dirStep
     
 
 ----
