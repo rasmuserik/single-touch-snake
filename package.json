@@ -1,0 +1,33 @@
+{
+  "name": "simple-snake",
+  "version": "0.0.1",
+  "devDependencies": {
+    "reputil": "*"
+  },
+  "description": "",
+  "keywords": [],
+  "author": ["Rasmus Erik Voel Jensen (solsort.com)"],
+  "scripts": {
+    "prepublish": "reputil build; git add simple-snake.js README.md",
+    "start": ""
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/rasmuserik/simple-snake.git"
+  },
+  "dependencies": {
+  },
+  "xtestling": {
+    "html": "test.html",
+    "browsers": [
+      "ie/7..latest",
+      "chrome/27..canary",
+      "firefox/22..nightly",
+      "safari/5.0.5..latest",
+      "opera/11.6..next",
+      "iphone/6",
+      "ipad/6",
+      "android-browser/4.2"
+    ]
+  }
+}
