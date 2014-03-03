@@ -4,13 +4,8 @@ framewait = 30
 dirStep = 0.1
 stepSize = 8
 sectionSize = 6
-
-
-document.body.innerHTML = "<canvas style=\"position:absolute;top:0;left:0;width:100%;height:100%\" id=\"canvas\" width=#{w} height=#{h}></canvas>"
-
-canvas = document.getElementById("canvas")
-ctx = canvas.getContext "2d"
-
+canvas = undefined
+ctx = undefined
 t0 = Date.now()
 
 score = 0
@@ -35,6 +30,10 @@ newBerry = ->
   ctx.fill()
 
 start = ->
+  document.body.innerHTML = "<canvas style=\"position:absolute;top:0;left:0;width:100%;height:100%\" id=\"canvas\" width=#{w} height=#{h}></canvas>"
+  canvas = document.getElementById("canvas")
+  ctx = canvas.getContext "2d"
+
   ctx.fillStyle = "#002"
   ctx.fillRect 0,0,1000,1000
   ctx.fillStyle = "#fff"
@@ -96,5 +95,7 @@ gameloop = ->
   setTimeout gameloop, Math.max(0, framewait - (Date.now() - startTime))
 
 start()
+
+document.addEventListener "deviceready", start, false
 
 

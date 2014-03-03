@@ -12,11 +12,9 @@
 
   sectionSize = 6;
 
-  document.body.innerHTML = "<canvas style=\"position:absolute;top:0;left:0;width:100%;height:100%\" id=\"canvas\" width=" + w + " height=" + h + "></canvas>";
+  canvas = void 0;
 
-  canvas = document.getElementById("canvas");
-
-  ctx = canvas.getContext("2d");
+  ctx = void 0;
 
   t0 = Date.now();
 
@@ -46,6 +44,9 @@
   };
 
   start = function() {
+    document.body.innerHTML = "<canvas style=\"position:absolute;top:0;left:0;width:100%;height:100%\" id=\"canvas\" width=" + w + " height=" + h + "></canvas>";
+    canvas = document.getElementById("canvas");
+    ctx = canvas.getContext("2d");
     ctx.fillStyle = "#002";
     ctx.fillRect(0, 0, 1000, 1000);
     ctx.fillStyle = "#fff";
@@ -121,5 +122,7 @@
   };
 
   start();
+
+  document.addEventListener("deviceready", start, false);
 
 }).call(this);
