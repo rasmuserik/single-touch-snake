@@ -1,5 +1,5 @@
 {
-  "name": "simple-snake",
+  "name": "single-touch-snake",
   "version": "0.0.2",
   "devDependencies": {
     "reputil": "*"
@@ -11,12 +11,12 @@
   "keywords": [],
   "author": ["Rasmus Erik Voel Jensen (solsort.com)"],
   "scripts": {
-    "prepublish": "reputil build; git add simple-snake.js README.md config.xml",
+    "prepublish": "reputil build; git add single-touch-snake.js README.md config.xml",
     "start": ""
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/rasmuserik/simple-snake.git"
+    "url": "https://github.com/rasmuserik/single-touch-snake.git"
   },
   "dependencies": {
   },
