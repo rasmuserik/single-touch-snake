@@ -1,4 +1,4 @@
-# single-touch-snake 0.0.1
+# single-touch-snake 0.0.2
 
 Simple snake game. Actually an user interface experiment to figure out a single button or touch/not-touch can be used to an object moving in 2d.
 
